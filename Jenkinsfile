@@ -6,17 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Git') {
-            steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/subhamPr/hello-world.git'
-            }
-            post {
-                success {
-                    echo "Success!"
-                }
-            }
-        }
         stage('Build') {
             steps {
                 
