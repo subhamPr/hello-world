@@ -29,5 +29,24 @@ pipeline {
                 }
             }
         }
+         stage ('Upload Artifacts') {
+            steps{
+                script{
+	                def server = Artifactory.server('JFrog');
+   	                def rtMaven = Artifactory.newMavenBuild()
+                	rtMaven.tool = "Infy'sMaven"
+   	                rtMaven.resolver server: server, releaseRepo: 'myNewRepo-maven-jcenter', snapshotRepo: 'myNewRepo-maven-jcenter'
+   	                rtMaven.deployer server: server, releaseRepo: 'myNewRepo-libs-release-local', snapshotRepo: 'myNewRepo-libs-snapshot-local'    
+   	                rtMaven.deployer.artifactDeploymentPatterns.addInclude("*.war").addExclude("*.zip")
+	                def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'install'
+	                server.publishBuildInfo buildInfo
+                        }
+                 }
+              post {
+                success {
+                    echo "Success!"
+                }
+            }
+            }
 }
 }
